@@ -8,10 +8,44 @@ import java.util.*;
 
 public class Main {
 
+    static HashMap<Integer, List<Integer>> mapCSV = readCSV("/home/joaopc/Documentos/DSATUR/src/csv/grafo07.csv");
+
     public static void main(String[] args) {
-        HashMap<Integer, List<Integer>> mapCSV = readCSV("/home/joaopc/Documentos/DSATUR/src/csv/grafo07.csv");
+
+        List<Integer> notColored = new ArrayList<>();
+        List<Integer> colored = new ArrayList<>();
+
+        for (int i = 1; i <= mapCSV.size(); i++){
+            notColored.add(i);
+        }
+
+        HashMap<Integer, Integer> coloredMap = new HashMap<>();
+
+        Integer highestDegree = getHighestDegree(mapCSV);
+
+        coloredMap.put(highestDegree, 0);
+
+        notColored.remove(highestDegree);
+        colored.add(highestDegree);
 
 
+    }
+
+    public static Integer getNextToBeColored(){
+
+        return 0;
+    }
+
+    private static Integer getHighestDegree(HashMap<Integer, List<Integer>> map){
+        Integer maior = 0;
+        Integer key = 1;
+        for(int i = 1; i <= map.size(); i++){
+            if(map.get(i).size() > maior){
+                maior = map.get(i).size();
+                key = i;
+            }
+        }
+        return key;
     }
 
     private static HashMap<Integer, List<Integer>> readCSV(String csvFile){
@@ -33,7 +67,6 @@ public class Main {
                 for(int i = 1; i < all.length; i++){
                     verticesAdj.add(Integer.valueOf(all[i].trim()));
                 }
-
                 mapCSV.put(node, verticesAdj);
             }
         } catch (FileNotFoundException e) {
