@@ -6,20 +6,30 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+//Created By João Pedro Souza - 2090325
+
 public class Main {
 
-    static HashMap<Integer, List<Integer>> mapCSV = readCSV("C:\\Users\\jpsou\\Google Drive\\UTFPR\\materias\\matematica discreta\\DSATUR\\src\\csv\\grafo07.csv");
+    //Global Variables
+    static HashMap<Integer, List<Integer>> mapCSV = readCSV("/home/joaopc/Documentos/DSATUR/src/csv/grafo07.csv");
     static Integer mapSize = mapCSV.size();
     static HashMap<Integer, Integer> mapDegree = new HashMap<>();
     static HashMap<Integer, Integer> saturationDegree = new HashMap<>();
 
     public static void main(String[] args) {
+
+        //HashMap of not colored nodes
         HashMap<Integer, List<Integer>> notColored = mapCSV;
+
+        //List of already coloreds nodes
         List<Integer> colored = new ArrayList<>();
 
+        //HashMap of colored nodes to print on csv file
         HashMap<Integer, Integer> coloredMap = new HashMap<>();
 
         calculateDegree();
+
+        //get the first node to be colored
         Integer highestDegree = getHighestDegree();
 
         coloredMap.put(highestDegree, 0);
@@ -36,16 +46,24 @@ public class Main {
 
             Integer nextToBeColored = getNextToBeColored(colored, notColored);
 
-//            System.out.println(nextToBeColored);
+            List<Integer> colorList = new ArrayList<>();
+
             for(Integer key : notColored.get(nextToBeColored)){
                 if(coloredMap.containsKey(key)){
-                    if(nextColor == coloredMap.get(key)){
-                        nextColor++;
-                    }
+                    colorList.add(coloredMap.get(key));
+                }
+            }
+
+            //Find the color to the next node to be colored
+            for(int i = 0; i < colorList.size(); i++){
+                if(colorList.get(i) == nextColor){
+                    nextColor++;
+                    i = 0;
                 }
             }
 
             coloredMap.put(nextToBeColored, nextColor);
+            colored.add(nextToBeColored);
             notColored.remove(nextToBeColored);
         }
 
@@ -59,6 +77,7 @@ public class Main {
         Integer nextToBeColored = -1;
         List<Integer> highestSaturationDegreeList = new ArrayList<>();
 
+        //calculation of the saturation degree for each node
         for(Integer colored : coloredList){
             for(Integer i : notColoredList.keySet()){
                 for(Integer j : notColoredList.get(i)){
@@ -69,16 +88,12 @@ public class Main {
             }
         }
 
+        //Set -1 to saturation degree for the nodes that already been colored
         for(Integer colored : coloredList){
             saturationDegree.put(colored, -1);
         }
 
-        for(Integer i : saturationDegree.keySet()){
-            System.out.println(saturationDegree.get(i));
-        }
-
-        System.out.println("\n------------------\n");
-
+        //Get the list of nodes with the highest saturation degree
         Integer highestSaturationDegree = getHighestSaturationDegree(saturationDegree);
         for(Integer key : saturationDegree.keySet()){
             if(saturationDegree.get(key) == highestSaturationDegree){
@@ -86,10 +101,9 @@ public class Main {
             }
         }
 
+        //find the node with highest degree of the highestSaturationDegreeList
+        //this node will be the next to be colored
         for(Integer aux : highestSaturationDegreeList){
-//            System.out.println(aux);
-//            System.out.println(mapDegree.get(aux));
-//            System.out.println("---");
             if(mapDegree.get(aux) > highestDegree){
                 highestDegree = mapDegree.get(aux);
                 nextToBeColored = aux;
@@ -102,12 +116,10 @@ public class Main {
     private static Integer getHighestSaturationDegree(HashMap<Integer, Integer> saturationDegreeList){
         Integer highestSaturationDegree = -2;
         for(Integer saturationDegreeKey : saturationDegreeList.keySet()){
-//            System.out.println("teste: " + saturationDegreeList.get(saturationDegreeKey));
             if(saturationDegreeList.get(saturationDegreeKey) > highestSaturationDegree){
                 highestSaturationDegree = saturationDegreeList.get(saturationDegreeKey);
             }
         }
-//        System.out.println("opa: " + highestSaturationDegree);
         return highestSaturationDegree;
     }
 
