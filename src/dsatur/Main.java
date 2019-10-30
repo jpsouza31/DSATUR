@@ -1,9 +1,6 @@
 package dsatur;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 //Created By João Pedro Souza - 2090325
@@ -55,11 +52,8 @@ public class Main {
             }
 
             //Find the color to the next node to be colored
-            for(int i = 0; i < colorList.size(); i++){
-                if(colorList.get(i) == nextColor){
+            while (colorList.contains(nextColor)){
                     nextColor++;
-                    i = 0;
-                }
             }
 
             coloredMap.put(nextToBeColored, nextColor);
@@ -67,9 +61,11 @@ public class Main {
             notColored.remove(nextToBeColored);
         }
 
+        System.out.println("Node - Color");
         for(Integer aux : coloredMap.keySet()){
             System.out.println(aux + " - " + coloredMap.get(aux));
         }
+        writeCSV(coloredMap);
     }
 
     private static Integer getNextToBeColored(List<Integer> coloredList, HashMap<Integer, List<Integer>> notColoredList){
@@ -168,5 +164,21 @@ public class Main {
             e.printStackTrace();
         }
         return mapCSV;
+    }
+
+    public static void writeCSV(HashMap<Integer, Integer> coloredMap) {
+
+        try {
+            FileWriter fw = new FileWriter("/home/joaopc/Documentos/DSATUR/src/csv/out.csv");
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.append("Node - Color\n");
+            for (Integer key : coloredMap.keySet()) {
+                bw.append(String.valueOf(key)).append(" - ").append(String.valueOf(coloredMap.get(key))).append("\n");
+            }
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
