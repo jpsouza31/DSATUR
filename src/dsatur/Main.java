@@ -11,7 +11,8 @@ public class Main {
     static HashMap<Integer, List<Integer>> mapCSV = readCSV("/home/joaopc/Documentos/DSATUR/src/csv/grafo07.csv");
     static Integer mapSize = mapCSV.size();
     static HashMap<Integer, Integer> mapDegree = new HashMap<>();
-    static HashMap<Integer, Integer> saturationDegree = new HashMap<>();
+    //HashMap of colored nodes to print on csv file
+    static HashMap<Integer, Integer> coloredMap = new HashMap<>();
 
     public static void main(String[] args) {
 
@@ -20,9 +21,6 @@ public class Main {
 
         //List of already coloreds nodes
         List<Integer> colored = new ArrayList<>();
-
-        //HashMap of colored nodes to print on csv file
-        HashMap<Integer, Integer> coloredMap = new HashMap<>();
 
         calculateDegree();
 
@@ -33,10 +31,6 @@ public class Main {
 
         notColored.remove(highestDegree);
         colored.add(highestDegree);
-
-        for(int i = 1; i <= mapSize; i++){
-            saturationDegree.put(i, 0);
-        }
 
         while (notColored.size() > 0){
             Integer nextColor = 0;
@@ -72,17 +66,42 @@ public class Main {
         Integer highestDegree = 0;
         Integer nextToBeColored = -1;
         List<Integer> highestSaturationDegreeList = new ArrayList<>();
+        List<Integer> colorList = new ArrayList<>();
+
+        HashMap<Integer, Integer> saturationDegree = new HashMap<>();
+
+        for(int i = 1; i <= mapSize; i++){
+            saturationDegree.put(i, 0);
+        }
 
         //calculation of the saturation degree for each node
-        for(Integer colored : coloredList){
-            for(Integer i : notColoredList.keySet()){
-                for(Integer j : notColoredList.get(i)){
-                    if(colored == j){
+//        for(Integer colored : coloredList){
+//            for(Integer i : notColoredList.keySet()){
+//                for(Integer j : notColoredList.get(i)){
+//                    if(colored == j){
+//                        if(coloredMap.containsKey(colored))
+//                        saturationDegree.put(i, saturationDegree.get(i) + 1);
+//                    }
+//                }
+//            }
+//        }
+
+        for(Integer i : notColoredList.keySet()){
+            for(Integer j : notColoredList.get(i)) {
+                if(coloredList.contains(j)){
+                    if(!colorList.contains(coloredMap.get(j))){
+                        colorList.add(coloredMap.get(j));
                         saturationDegree.put(i, saturationDegree.get(i) + 1);
                     }
                 }
             }
         }
+
+//        for(int i = 1; i <= mapSize; i++){
+//            System.out.println(saturationDegree.get(i));
+//        }
+
+        System.out.println("-------------");
 
         //Set -1 to saturation degree for the nodes that already been colored
         for(Integer colored : coloredList){
