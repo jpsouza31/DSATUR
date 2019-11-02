@@ -8,9 +8,10 @@ import java.util.*;
 public class Main {
 
     //Global Variables
-    static HashMap<Integer, List<Integer>> mapCSV = readCSV("/home/joaopc/Documentos/DSATUR/src/csv/grafo07.csv");
+    static HashMap<Integer, List<Integer>> mapCSV = readCSV("C:\\Users\\jpsou\\Google Drive\\UTFPR\\materias\\matematica discreta\\DSATUR\\src\\csv\\grafo07.csv");
     static Integer mapSize = mapCSV.size();
     static HashMap<Integer, Integer> mapDegree = new HashMap<>();
+    static HashMap<Integer, Integer> saturationDegree = new HashMap<>();
     //HashMap of colored nodes to print on csv file
     static HashMap<Integer, Integer> coloredMap = new HashMap<>();
 
@@ -34,6 +35,10 @@ public class Main {
 
         while (notColored.size() > 0){
             Integer nextColor = 0;
+
+            for(int i = 1; i <= mapSize; i++){
+                saturationDegree.put(i, 0);
+            }
 
             Integer nextToBeColored = getNextToBeColored(colored, notColored);
 
@@ -68,25 +73,9 @@ public class Main {
         List<Integer> highestSaturationDegreeList = new ArrayList<>();
         List<Integer> colorList = new ArrayList<>();
 
-        HashMap<Integer, Integer> saturationDegree = new HashMap<>();
-
-        for(int i = 1; i <= mapSize; i++){
-            saturationDegree.put(i, 0);
-        }
-
         //calculation of the saturation degree for each node
-//        for(Integer colored : coloredList){
-//            for(Integer i : notColoredList.keySet()){
-//                for(Integer j : notColoredList.get(i)){
-//                    if(colored == j){
-//                        if(coloredMap.containsKey(colored))
-//                        saturationDegree.put(i, saturationDegree.get(i) + 1);
-//                    }
-//                }
-//            }
-//        }
-
         for(Integer i : notColoredList.keySet()){
+            colorList.clear();
             for(Integer j : notColoredList.get(i)) {
                 if(coloredList.contains(j)){
                     if(!colorList.contains(coloredMap.get(j))){
@@ -96,12 +85,6 @@ public class Main {
                 }
             }
         }
-
-//        for(int i = 1; i <= mapSize; i++){
-//            System.out.println(saturationDegree.get(i));
-//        }
-
-        System.out.println("-------------");
 
         //Set -1 to saturation degree for the nodes that already been colored
         for(Integer colored : coloredList){
@@ -188,7 +171,7 @@ public class Main {
     public static void writeCSV(HashMap<Integer, Integer> coloredMap) {
 
         try {
-            FileWriter fw = new FileWriter("/home/joaopc/Documentos/DSATUR/src/csv/out.csv");
+            FileWriter fw = new FileWriter("C:\\Users\\jpsou\\Google Drive\\UTFPR\\materias\\matematica discreta\\DSATUR\\src\\csv\\out.csv");
             BufferedWriter bw = new BufferedWriter(fw);
             bw.append("Node - Color\n");
             for (Integer key : coloredMap.keySet()) {
